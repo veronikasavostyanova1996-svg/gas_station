@@ -1,0 +1,12 @@
+streamlit
+pandas
+psycopg2-binary
+geopy
+folium
+streamlit-folium
+httpx
+requests
+# ssl 
+# date 
+dotenv
+# os
