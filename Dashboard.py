@@ -279,7 +279,7 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 {row['cheapest_adress']}<br>
                 {row['cheapest_price']} €<br>
                 <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
-                """
+                """,
                 icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
                 ).add_to(m)
 
