@@ -226,10 +226,10 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
             cheapest_price = cheapest_row["price"]
             cheapest_adress = cheapest_row["direccion"]
             popup_html = f"""
-            <b>{row['cheapest_name']}</b><br>
-            {row['cheapest_adress']}<br>
-            {row['cheapest_price']} €<br>
-            <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
+           # <b>{row['cheapest_name']}</b><br>
+           # {row['cheapest_adress']}<br>
+           # {row['cheapest_price']} €<br>
+            #<a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
             """
         folium.Marker(
             location = [cheapest_lat, cheapest_lon],
