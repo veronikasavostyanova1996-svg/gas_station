@@ -44,40 +44,6 @@ def get_gas_stations():
     conn.close()
     return df
 
-"""
-# find the nearest gas station 
-def find_nearest(address, fuel_type, df):
-    geolocator = Nominatim(user_agent="gasolineras_app", timeout=10) 
-    time.sleep(1)  # добавить задержку
-    location = geolocator.geocode(address)
-    location = geolocator.geocode(address) #Sends a request to the Nominatim to find coordinates for a text address. If the address is found, a Location object is returned, containing the address, latitude, and longitude.
-    if not location:
-        st.error("Dirección no encontrada")
-        return None, None, None
-
-    user_coords = (location.latitude, location.longitude)
-    df["fuel_type_norm"] = df["fuel_type"].astype(str).str.strip().str.lower() # filter the DataFrame by the selected fuel type (case insensitive)
-    fuel_type_norm = fuel_type.strip().lower()
-    df = df[df["fuel_type_norm"] == fuel_type_norm].copy()
-
-    if df.empty:
-        st.warning("No hay datos para este tipo de combustible")
-        return user_coords, None, None
-
-    # calculate the distance from the address to each gas station from the database and writes the result to a new column distancia_m (in meters).
-    df["distancia_m"] = df.apply(lambda row: geodesic(user_coords, (row["lat"], row["lon"])).meters, axis=1)
-
-    # 10 mas cercanas
-    nearest = df.sort_values("distancia_m").head(10)
-    # mas barata en la misma ciudad
-    if "municipio" in nearest.columns and not nearest.empty:
-        ciudad = nearest.iloc[0]["municipio"]
-        cheapest = df[df["municipio"] == ciudad].sort_values("price").head(1)
-    else:
-        cheapest = pd.DataFrame()
-
-    return user_coords, nearest, cheapest
-"""
 
 
 def geocode_google(address, api_key):
@@ -239,23 +205,17 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
     else:
         st.subheader("Mapa interactivo")
         user_lat, user_lon = st.session_state["user_coords"]
-        # obtenemos coordenadas de la gasolinera más barata
-        if not st.session_state["cheapest"].empty:
-            cheapest_row = st.session_state["cheapest"].iloc[0]
-            cheapest_lat = cheapest_row["lat"]
-            cheapest_lon = cheapest_row["lon"]
-        else:
-            cheapest_lat, cheapest_lon = None, None
+
         m = folium.Map(location=[user_lat, user_lon], zoom_start=12)
 
-        # Marcador del usuario
+        # Usuario
         folium.Marker(
             location=[user_lat, user_lon],
             popup="Tu ubicación",
             icon=folium.Icon(color="darkred", icon="car", prefix="fa", icon_color="lightgray")
         ).add_to(m)
 
-        # Marcadores de gasolineras
+        # Gasolineras
         for _, row in st.session_state["nearest"].iterrows():
             ruta_url = f"https://www.google.com/maps/dir/{user_lat},{user_lon}/{row['lat']},{row['lon']}"
             popup_html = f"""
@@ -269,18 +229,22 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 popup=popup_html,
                 icon=folium.Icon(color="cadetblue", icon="tint", prefix="fa", icon_color="lightgray")
             ).add_to(m)
-            
-        # Marcador de cheapest
-        if cheapest_lat and cheapest_lon:
-            folium.Marker(
-                location=[cheapest_lat, cheapest_lon],
-                popup_html = f"""
-                <b>{row['cheapest_name']}</b><br>
-                {row['cheapest_adress']}<br>
-                {row['cheapest_price']} €<br>
-                <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
-                """,
-                icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
-                ).add_to(m)
 
+        # Más barata
+        if not st.session_state["cheapest"].empty:
+            row = st.session_state["cheapest"].iloc[0]
+            ruta_url = f"https://www.google.com/maps/dir/{user_lat},{user_lon}/{row['lat']},{row['lon']}"
+            popup_html = f"""
+            <b>{row['station_name']}</b><br>
+            {row['direccion']}<br>
+            {row['price']} €<br>
+            <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
+            """
+            folium.Marker(
+                location=[row["lat"], row["lon"]],
+                popup=popup_html,
+                icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
+            ).add_to(m)
+
+            
         st_folium(m, width=700, height=500)
