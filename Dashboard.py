@@ -197,7 +197,7 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
         # Marcador del usuario
         folium.Marker(
             location=[user_lat, user_lon],
-            popup="📍 Tu ubicación",
+            popup="📌📎Tu ubicación",
             icon=folium.Icon(color="darkred", icon="car", prefix="fa", icon_color="lightgray")
         ).add_to(m)
 
@@ -208,7 +208,7 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
             <b>{row['station_name']}</b><br>
             {row['direccion']}<br>
             {row['price']} €<br>
-            <a href="{ruta_url}" target="_blank">📍 Ver ruta</a>
+            <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
             """
             folium.Marker(
                 location=[row["lat"], row["lon"]],
