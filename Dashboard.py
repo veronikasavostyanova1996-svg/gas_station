@@ -223,7 +223,7 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 <b style="font-size:15px;"> {row['station_name']}</b><br><br>
                 <b> Dirección:</b> {row['direccion']}<br>
                 <b> Precio:</b> {row['price']} €<br>
-                <a href="{ruta_url}" target="_blank"> style="color:#6B212C; font-weight:600; text-decoration:none;"> 🚘 Ver ruta</a>
+                <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
             </div>
             """
             folium.Marker(
