@@ -219,10 +219,12 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
         for _, row in st.session_state["nearest"].iterrows():
             ruta_url = f"https://www.google.com/maps/dir/{user_lat},{user_lon}/{row['lat']},{row['lon']}"
             popup_html = f"""
-            <b>{row['station_name']}</b><br>
-            {row['direccion']}<br>
-            {row['price']} €<br>
-            <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
+            <div style="width: 230px; font-size: 14px; line-height: 1.5;">
+                <b style="font-size:15px;"> {row['station_name']}</b><br><br>
+                <b> Dirección:</b> {row['direccion']}<br>
+                <b> Precio:</b> {row['price']} €<br>
+                <a href="{ruta_url}" target="_blank"> style="color:#6B212C; font-weight:600; text-decoration:none;"> 🚘 Ver ruta</a>
+            </div>
             """
             folium.Marker(
                 location=[row["lat"], row["lon"]],
@@ -246,5 +248,5 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
             ).add_to(m)
 
-            
+
         st_folium(m, width=700, height=500)
