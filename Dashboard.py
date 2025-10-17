@@ -217,10 +217,23 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 icon=folium.Icon(color="cadetblue", icon="tint", prefix="fa", icon_color="lightgray")
             ).add_to(m)
         # Marcador de cheapest
-        folium.marker(
-            location = [cheapest_lat, cheapest_lon]
-            popup=popup_html
+        if not st.session_state["cheapest"].empty:
+            cheapest_row = st.session_state["cheapest"].iloc[0]
+            cheapest_lat = cheapest_row["lat"]
+            cheapest_lon = cheapest_row["lon"]
+            cheapest_name = cheapest_row["station_name"]
+            cheapest_price = cheapest_row["price"]
+            cheapest_adress = cheapest_row["direccion"]
+            popup_html = f"""
+            <b>{row['cheapest_name']}</b><br>
+            {row['cheapest_adress']}<br>
+            {row['cheapest_price']} €<br>
+            <a href="{ruta_url}" target="_blank">🚘 Ver ruta</a>
+            """
+        folium.Marker(
+            location = [cheapest_lat, cheapest_lon],
+            popup=popup_html,
             icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
-        )
+        ).add_to(m)
 
         st_folium(m, width=700, height=500)
