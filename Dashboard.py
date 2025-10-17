@@ -218,7 +218,7 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
             ).add_to(m)
         # Marcador de cheapest
         folium.marker(
-            location = []
+            location = [cheapest_lat, cheapest_lon]
             popup=popup_html
             icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
         )
