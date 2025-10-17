@@ -192,12 +192,13 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
     else:
         st.subheader("Mapa interactivo")
         user_lat, user_lon = st.session_state["user_coords"]
+        cheapest_lat, cheapest_lon = st.session_state["cheapest"] 
         m = folium.Map(location=[user_lat, user_lon], zoom_start=12)
 
         # Marcador del usuario
         folium.Marker(
             location=[user_lat, user_lon],
-            popup="📌📎Tu ubicación",
+            popup="Tu ubicación",
             icon=folium.Icon(color="darkred", icon="car", prefix="fa", icon_color="lightgray")
         ).add_to(m)
 
@@ -215,5 +216,11 @@ if "nearest" in st.session_state and st.session_state["nearest"] is not None:
                 popup=popup_html,
                 icon=folium.Icon(color="cadetblue", icon="tint", prefix="fa", icon_color="lightgray")
             ).add_to(m)
+        # Marcador de cheapest
+        folium.marker(
+            location = []
+            popup=popup_html
+            icon=folium.Icon(color="darkpurple", icon="star", prefix="fa", icon_color="beige")
+        )
 
         st_folium(m, width=700, height=500)
