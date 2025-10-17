@@ -1,13 +1,13 @@
 import streamlit as st # UI framework for dashboard
 import psycopg2
 import pandas as pd
-from geopy.geocoders import Nominatim #Nominatim is the part of OpenStreetMap (OSM), free open mapping API.
+#from geopy.geocoders import Nominatim #Nominatim is the part of OpenStreetMap (OSM), free open mapping API.
 from geopy.distance import geodesic # distance between two coordination
 import folium # biolding interactive map
 from streamlit_folium import st_folium # embeds the map into Streamlit
 from dotenv import load_dotenv
 import os
-import time
+import requests
 
 
 load_dotenv()  #.env
@@ -44,7 +44,7 @@ def get_gas_stations():
     conn.close()
     return df
 
-
+"""
 # find the nearest gas station 
 def find_nearest(address, fuel_type, df):
     geolocator = Nominatim(user_agent="gasolineras_app", timeout=10) 
@@ -77,7 +77,52 @@ def find_nearest(address, fuel_type, df):
         cheapest = pd.DataFrame()
 
     return user_coords, nearest, cheapest
+"""
 
+
+def geocode_google(address, api_key):
+    """Devuelve latitud y longitud a partir de una dirección usando Google Geocoding API"""
+    url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {"address": address, "key": api_key, "language": "es"}
+    r = requests.get(url, params=params, timeout=10)
+    data = r.json()
+    if data["status"] == "OK":
+        location = data["results"][0]["geometry"]["location"]
+        return location["lat"], location["lng"]
+    else:
+        return None, None
+
+
+def find_nearest(address, fuel_type, df):
+    api_key = os.getenv("API_KEY")  # usamos el API Key desde .env o secrets.toml
+    lat, lon = geocode_google(address, api_key)
+
+    if not lat or not lon:
+        st.error("No se pudo geolocalizar la dirección.")
+        return None, None, None
+
+    user_coords = (lat, lon)
+
+    df["fuel_type_norm"] = df["fuel_type"].astype(str).str.strip().str.lower()
+    fuel_type_norm = fuel_type.strip().lower()
+    df = df[df["fuel_type_norm"] == fuel_type_norm].copy()
+
+    if df.empty:
+        st.warning("No hay datos para este tipo de combustible")
+        return user_coords, None, None
+
+    df["distancia_m"] = df.apply(
+        lambda row: geodesic(user_coords, (row["lat"], row["lon"])).meters, axis=1
+    )
+
+    nearest = df.sort_values("distancia_m").head(10)
+    if "municipio" in nearest.columns and not nearest.empty:
+        ciudad = nearest.iloc[0]["municipio"]
+        cheapest = df[df["municipio"] == ciudad].sort_values("price").head(1)
+    else:
+        cheapest = pd.DataFrame()
+
+    return user_coords, nearest, cheapest
 
 # Custom dashboard theme
 st.markdown("""
