@@ -9,9 +9,6 @@ from dotenv import load_dotenv
 import os
 import time
 
-geolocator = Nominatim(user_agent="gasolineras_dashboard", timeout=10)
-time.sleep(1)  # добавить задержку
-location = geolocator.geocode(address)
 
 load_dotenv()  #.env
 db_password = os.getenv("DB_PASSWORD")
@@ -50,7 +47,9 @@ def get_gas_stations():
 
 # find the nearest gas station 
 def find_nearest(address, fuel_type, df):
-    geolocator = Nominatim(user_agent="gasolineras_app") 
+    geolocator = Nominatim(user_agent="gasolineras_app", timeout=10) 
+    time.sleep(1)  # добавить задержку
+    location = geolocator.geocode(address)
     location = geolocator.geocode(address) #Sends a request to the Nominatim to find coordinates for a text address. If the address is found, a Location object is returned, containing the address, latitude, and longitude.
     if not location:
         st.error("Dirección no encontrada")
