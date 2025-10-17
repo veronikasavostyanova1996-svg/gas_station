@@ -7,6 +7,7 @@ import folium # biolding interactive map
 from streamlit_folium import st_folium # embeds the map into Streamlit
 from dotenv import load_dotenv
 import os
+import time
 
 geolocator = Nominatim(user_agent="gasolineras_dashboard", timeout=10)
 time.sleep(1)  # добавить задержку
