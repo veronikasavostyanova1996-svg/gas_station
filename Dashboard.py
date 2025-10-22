@@ -16,6 +16,7 @@ db_user = os.getenv("DB_USER", "postgres")
 db_name = os.getenv("DB_NAME", "postgres")
 DB_HOST = os.getenv("DB_HOST")
 
+
 # connecting to the database
 def get_connection():
     return psycopg2.connect(
@@ -25,7 +26,6 @@ def get_connection():
         host=DB_HOST,
         port="5432"
     )
-
 
 # obtening data on gas stations and prices from the database
 def get_gas_stations():
