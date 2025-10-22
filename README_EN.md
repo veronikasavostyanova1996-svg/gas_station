@@ -10,17 +10,17 @@ Every day, a Python script downloads fresh data from the official Ministerio de 
 
 ```mermaid
 flowchart LR
-    A[Task Scheduler\n(daily at 07:00)] --> B[Python: import_data_v2.py]
+    A[Task Scheduler (daily at 07:00)] --> B[Python: import_data_v2.py]
 
     subgraph Extract
-      B --> C1[Ministerio de Industria API\n(httpx + TLS configuration)]
-      B --> C2[Google Places API\n(by coordinates)]
+      B --> C1[Ministerio de Industria API (httpx + TLS configuration)]
+      B --> C2[Google Places API (by coordinates)]
     end
 
     subgraph Transform
       D1[Filter by province: Coruña]
       D2[Coordinate parsing and cleaning]
-      D3[Normalize prices\n"Precio Gasolina 95 E5" → (fuel_type, price)]
+      D3[Normalize prices "Precio Gasolina 95 E5" → (fuel_type, price)]
       D4[Google enrichment: name, rating, address]
       C1 --> D1 --> D2 --> D3
       C2 --> D4
@@ -37,7 +37,7 @@ flowchart LR
     D2 --> E1
 
     subgraph Serve (BI)
-      F[Streamlit Cloud\nDashboard.py]
+      F[Streamlit Cloud Dashboard.py]
       G[(GitHub Repository)]
       G --> F
       F -->|psycopg2| E1
