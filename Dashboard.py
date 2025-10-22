@@ -16,6 +16,11 @@ db_user = os.getenv("DB_USER", "postgres")
 db_name = os.getenv("DB_NAME", "postgres")
 DB_HOST = os.getenv("DB_HOST")
 
+print("Connecting to DB:")
+print(f"  Host: {DB_HOST}")
+print(f"  DB:   {db_name}")
+print(f"  User: {db_user}")
+print(f"  Password: {'***' if db_password else '(empty)'}")
 
 # connecting to the database
 def get_connection():
