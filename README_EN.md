@@ -10,7 +10,7 @@ Every day, a Python script downloads fresh data from the official Ministerio de 
 
 ```mermaid
 flowchart LR
-    FROM [Task Scheduler (daily at 07.00)] --> IN [Python import_data_v2.py]
+    A["Task Scheduler (daily at 07:00)"] --> B["Python import_data_v2.py"]
 
     subgraph Extract
         B --> C1["Ministerio de Industria API (httpx + TLS configuration)"]
