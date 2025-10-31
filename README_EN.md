@@ -36,7 +36,7 @@ flowchart LR
     D4 --> E1
     D2 --> E1
 
-    subgraph Serve ["BI Dasboard"]
+    subgraph Serve ["View data: BI Dasboard"]
         F["Streamlit Cloud Dashboard.py"]
         G["GitHub Repository"]
         G --> F
