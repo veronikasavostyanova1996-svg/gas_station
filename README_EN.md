@@ -10,14 +10,14 @@ Every day, a Python script downloads fresh data from the official Ministerio de 
 
 ```mermaid
 flowchart LR
-    A["Task Scheduler (daily at 07:00)"] --> B["Python import_data_v2.py"]
+    A["Task Scheduler (daily at 07:00)"] --> B["Python sript: import_data_v2.py"]
 
-    subgraph Extract
+    subgraph Extract ["Extract (API Python)"]
         B --> C1["Ministerio de Industria API (httpx + TLS configuration)"]
         B --> C2["Google Places API (by coordinates)"]
     end
 
-    subgraph Transform
+    subgraph Transform ["Transform (Python)"]
         D1["Filter by province Coruña"]
         D2["Coordinate parsing and cleaning"]
         D3["Normalize prices 'Precio Gasolina 95 E5' -> (fuel_type, price)"]
@@ -27,7 +27,7 @@ flowchart LR
         D2 --> D4
     end
 
-    subgraph Load ["Supabase Postgres + PostGIS"]
+    subgraph Load ["Load (Postgres + PostGIS)"]
         E1["gasolineras.gas_stations"]
         E2["gasolineras.prices"]
     end
@@ -36,7 +36,7 @@ flowchart LR
     D4 --> E1
     D2 --> E1
 
-    subgraph Serve ["BI Layer"]
+    subgraph Serve ["BI Dasboard"]
         F["Streamlit Cloud Dashboard.py"]
         G["GitHub Repository"]
         G --> F
@@ -81,7 +81,7 @@ erDiagram
 | Category | Technology |
 |-----------|-------------|
 | **Language** | Python 3.11+ |
-| **Database** | Supabase (PostgreSQL + PostGIS) |
+| **Database** | PostgreSQL + PostGIS |
 | **Interface** | Streamlit Cloud |
 | **HTTP Clients** | httpx, requests |
 | **Libraries** | psycopg2, dotenv, pandas, folium, geopy |
