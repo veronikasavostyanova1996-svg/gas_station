@@ -48,7 +48,7 @@ flowchart LR
 
 ---
 
-## Data Model (ER Diagram)
+## Data Model
 
 ```mermaid
 erDiagram
